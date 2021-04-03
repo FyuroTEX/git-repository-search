@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import PaginationExamplePagination from '../Pagination/Pagination';
 import { List } from 'semantic-ui-react';
 
 const ListItem = ({ name, url, description }) => (
@@ -18,18 +19,21 @@ const SeachList = () => {
   const result = useSelector((state) => state.search.list.data);
 
   return (
-    <List divided relaxed>
-      {result.map((item) => {
-        return (
-          <ListItem
-            key={item.id}
-            name={item.full_name}
-            description={item.description}
-            url={item.html_url}
-          />
-        );
-      })}
-    </List>
+    <>
+      {result.length > 0 && <PaginationExamplePagination />}
+      <List divided relaxed>
+        {result.map((item) => {
+          return (
+            <ListItem
+              key={item.id}
+              name={item.full_name}
+              description={item.description}
+              url={item.html_url}
+            />
+          );
+        })}
+      </List>
+    </>
   );
 };
 

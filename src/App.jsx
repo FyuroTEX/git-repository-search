@@ -1,6 +1,6 @@
 import React from 'react';
 import SeachList from './Components/List';
-
+import ErrorBoundry from './Components/error-boundry';
 
 import styles from './App.module.scss';
 import SearchInput from './Components/SearchInput';
@@ -10,9 +10,9 @@ function App() {
     <div className={styles.App}>
       <header className={styles.header}>
         <SearchInput />
-        <button onClick={() => {}}>Click</button>
-        <SeachList searchResult={[]} />
-       
+        <ErrorBoundry>
+          <SeachList />
+        </ErrorBoundry>
       </header>
     </div>
   );
