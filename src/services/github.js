@@ -1,6 +1,6 @@
 import VirtualService from './VirtualService';
 
-export default class Gibhub extends VirtualService {
+export default class Github extends VirtualService {
   constructor() {
     super();
     this.url =
