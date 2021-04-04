@@ -3,7 +3,7 @@ import SeachList from './Components/List';
 import ErrorBoundry from './Components/error-boundry';
 
 import styles from './App.module.scss';
-import SearchInput from './Components/SearchInput';
+import SearchInput from './Components/SearchInput/SearchInput';
 
 function App() {
   return (

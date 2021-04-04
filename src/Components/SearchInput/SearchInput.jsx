@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import debounce from 'lodash/debounce';
-import { getSearchResult } from '../redux/actions/search';
+import { getSearchResult } from '../../redux/actions/search';
 
 import { Input } from 'semantic-ui-react';
 

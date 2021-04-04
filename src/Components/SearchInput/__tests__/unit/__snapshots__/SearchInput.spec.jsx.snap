@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchInput input text SearchInput 1`] = `ShallowWrapper {}`;
+
+exports[`SearchInput shallow SearchInput 1`] = `ShallowWrapper {}`;
