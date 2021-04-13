@@ -1,48 +1,27 @@
 import {
-  NEW_SEARCH_REQUEST,
-  GET_DATA,
-  CHANGE_PAGE,
-  GET_TOTAL_SEARCH_COUNT,
-  CACHE,
-  RESET_PAGE,
+  REQUEST,
+  SET_DATA,
+  GET_FROM_CACHE
 } from '../types/types';
 
-export function getSearchResult(query) {
+export function newRequest({searchRequest, page}) {
   return {
-    type: NEW_SEARCH_REQUEST,
-    payload: query,
+    type: REQUEST,
+    payload: { searchRequest, page },
   };
 }
 
-export function fromCache(data) {
+export function setData(maxPages, data, searchQuery) {
   return {
-    type: CACHE,
-    payload: data,
+    type: SET_DATA,
+    payload: { maxPages, data, searchQuery },
   };
 }
 
-export function getData(search, data) {
+export function getFromCache(cachedData) {
   return {
-    type: GET_DATA,
-    payload: { search, data },
+    type: GET_FROM_CACHE,
+    payload: cachedData,
   };
-};
+}
 
-export function changePage(page) {
-  return {
-    type: CHANGE_PAGE,
-    payload: page,
-  };
-};
-export function resetPage() {
-  return {
-    type: RESET_PAGE
-  };
-};
-
-export function getTotalSearchCount(count) {
-  return {
-    type: GET_TOTAL_SEARCH_COUNT,
-    payload: count,
-  };
-};

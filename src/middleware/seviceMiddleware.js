@@ -1,32 +1,35 @@
 import Github from '../services/Github';
-import { get, find } from 'lodash';
-import { NEW_SEARCH_REQUEST, CHANGE_PAGE } from '../redux/types/types';
-import {
-  getData,
-  getTotalSearchCount,
-  resetPage,
-  fromCache,
-} from '../redux/actions/search';
+import { get } from 'lodash';
+import { REQUEST } from '../redux/types/types';
+import { setData, getFromCache } from '../redux/actions/search';
 import { isLoading, hasError } from '../redux/actions/loading';
 
 const service = new Github();
 
 const seviceMiddleware = ({ dispatch, getState }) => (next) => (action) => {
-  const cached = get(getState(), ['search', 'cache']);
-  const currentPage = get(getState(), ['search', 'page']);
+  const lastQuery = get(getState(), ['search', 'searchRequest']);
   const SERVER_REST = 60000;
 
-  if (action.type === NEW_SEARCH_REQUEST || action.type === CHANGE_PAGE) {
+  if (action.type === REQUEST) {
+    const {
+      payload: { searchRequest = lastQuery, page = '' },
+    } = action;
     dispatch(isLoading(true));
 
-    const middleware = (params) => {
+    const cachedKey = `${searchRequest}|${page}`;
+    const cached = get(getState(), ['search', 'cache', cachedKey]);
+
+    if (cached) {
+      dispatch(getFromCache(cached));
+      dispatch(isLoading(false));
+    } else {
       const pages = (count) => {
         const perPage = count / 30;
-        dispatch(getTotalSearchCount(perPage > 33 ? 33 : Math.ceil(perPage)));
+        return perPage > 33 ? 33 : Math.ceil(perPage);
       };
 
       service
-        .get(...params)
+        .get(searchRequest, page)
         .then((result) => {
           if (result.status === 200) {
             return result.json();
@@ -37,46 +40,11 @@ const seviceMiddleware = ({ dispatch, getState }) => (next) => (action) => {
           }
         })
         .then((data) => {
-          if (action.type === NEW_SEARCH_REQUEST) {
-            pages(data.total_count);
-            dispatch(resetPage());
-          }
-
-          dispatch(getData(action.payload, data.items));
+          dispatch(setData(pages(data.total_count), data.items, cachedKey));
         })
         .finally(() => dispatch(isLoading(false)));
-    };
-
-    const inCache = (pge, sRequest) => {
-      return find(cached, {
-        page: pge,
-        searchRequest: sRequest,
-      });
-    };
-
-    if (action.type === NEW_SEARCH_REQUEST) {
-      const cachedData = inCache(currentPage, action.payload);
-      console.log(cachedData);
-      if (cachedData) {
-        dispatch(fromCache(cachedData.data));
-        dispatch(isLoading(false));
-      } else {
-        middleware([action.payload]);
-      };
-    };
-
-    if (action.type === CHANGE_PAGE) {
-      const url = get(getState(), ['search', 'searchRequest']);
-      const cachedData = inCache(action.payload, url);
-
-      if (cachedData) {
-        dispatch(fromCache(cachedData.data));
-        dispatch(isLoading(false));
-      } else {
-        middleware([url, action.payload]);
-      };
-    };
-  };
+    }
+  }
 
   return next(action);
 };

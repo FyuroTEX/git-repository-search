@@ -1,65 +1,39 @@
 import {
-  CACHE,
-  NEW_SEARCH_REQUEST,
-  GET_DATA,
-  CHANGE_PAGE,
-  GET_TOTAL_SEARCH_COUNT,
-  RESET_PAGE
+  REQUEST,
+  GET_FROM_CACHE,
+  SET_DATA,
 } from '../types/types';
 
 const initialState = {
   searchRequest: '',
-  page: 1,
-  cache: [],
-  list: {
-    data: [],
-    isEnd: false,
-    count: 1,
-  },
+  currentPage: 1,
+  maxPages: 1,
+  cache: {},
+  list: [],
 };
 
 export const search = (state = initialState, action) => {
   switch (action.type) {
-    case CACHE:
+    case GET_FROM_CACHE:
       return {
         ...state,
-        list: { ...state.list, data: action.payload },
+        list: action.payload,
       };
-    case NEW_SEARCH_REQUEST:
+    case REQUEST:
       return {
         ...state,
-        searchRequest: action.payload,
+        searchRequest: action.payload.searchRequest || state.searchRequest,
+        currentPage: action.payload.page || 1,
       };
-    case CHANGE_PAGE:
+    case SET_DATA:
       return {
         ...state,
-        page: action.payload,
-      };
-      
-    case RESET_PAGE:
-      return {
-        ...state,
-        page: 1,
-      };
-    
-    case GET_DATA:
-      if (state.cache.length >= 5) state.cache.shift();
-      return {
-        ...state,
-        cache: [
+        maxPages: action.payload.maxPages,
+        list: action.payload.data || [],
+        cache: {
           ...state.cache,
-          {
-            searchRequest: state.searchRequest,
-            page: state.page,
-            data: action.payload.data ,
-          },
-        ],
-        list: { ...state.list, data: action.payload.data || []},
-      };
-    case GET_TOTAL_SEARCH_COUNT:
-      return {
-        ...state,
-        list: { ...state.list, count: action.payload },
+          [action.payload.searchQuery]: action.payload.data,
+        },
       };
     default:
       return state;

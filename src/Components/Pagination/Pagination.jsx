@@ -1,17 +1,17 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { changePage } from '../../redux/actions/search';
+import { newRequest } from '../../redux/actions/search';
 
 import { Pagination } from 'semantic-ui-react';
 
-const PaginationExamplePagination = () => {
+const PaginationPage = () => {
   const dispatch = useDispatch();
-  const maxPages = useSelector((state) => state.search.list.count);
-  const currentPage = useSelector((state) => state.search.page);
+  const maxPages = useSelector((state) => state.search.maxPages);
+  const currentPage = useSelector((state) => state.search.currentPage);
   const loading = useSelector((state) => state.utils.loading);
 
   const handlePaginationChange = (e, { activePage }) => {
-    dispatch(changePage(activePage));
+    dispatch(newRequest({page: activePage}));
   };
   return (
     <Pagination
@@ -23,4 +23,4 @@ const PaginationExamplePagination = () => {
   );
 };
 
-export default PaginationExamplePagination;
+export default PaginationPage;
