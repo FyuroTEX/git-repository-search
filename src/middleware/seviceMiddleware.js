@@ -14,6 +14,7 @@ const seviceMiddleware = ({ dispatch, getState }) => (next) => (action) => {
     const {
       payload: { searchRequest = lastQuery, page = '' },
     } = action;
+    
     dispatch(isLoading(true));
 
     const cachedKey = `${searchRequest}|${page}`;

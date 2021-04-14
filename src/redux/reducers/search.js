@@ -26,6 +26,8 @@ export const search = (state = initialState, action) => {
         currentPage: action.payload.page || 1,
       };
     case SET_DATA:
+      const cachedKeys = Object.keys(state.cache);
+      if (cachedKeys.length >= 5) delete state.cache[cachedKeys[0]];
       return {
         ...state,
         maxPages: action.payload.maxPages,
